@@ -81,23 +81,27 @@ export default function Events() {
     }
   };
 
-  const handleEventAction = async (event1: React.MouseEvent<HTMLButtonElement>,action: string, eventId: number) => {
+  const handleEventAction = async (event1: React.MouseEvent<HTMLButtonElement>, action: string, eventId: number) => {
     event1.preventDefault();
     if (!recyclerId || !token) {
       setError("User is not logged in.");
       return;
     }
-
+  
     try {
       await axios.post(`http://localhost:3000/recycler/${action}/${recyclerId}/${eventId}`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
+  
       setError(null);
       alert(`Event ${action}ed successfully`);
+
+      fetchEvents();
     } catch {
       setError(`Failed to ${action} the event.`);
     }
   };
+  
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -133,19 +137,18 @@ export default function Events() {
                 <div key={event.id} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border">
                   <h2 className="text-xl font-semibold mb-2">{event.address}</h2>
                   <p className="text-gray-600 dark:text-gray-300">Weight: {event.weight} kg</p>
-                  <div className="text-gray-500">
-                    <p>📅 {day}, {date}</p>
-                    <p>⏰ {time}</p>
-                  </div>
-                  <p className="text-gray-500">📍 {event.address}</p>
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      onClick={(e) => handleEventAction(e, "join", event.id)}
-                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition"
-                      
-                    >
-                      Join
-                    </button>
+                  <div>
+          <p>📅 {day}, {date}</p>
+          <p>⏰ {time}</p>
+        </div>
+        <p>📍 {event.address}</p>
+        <div className="mt-4 flex gap-2">
+          <button
+            onClick={(e) => handleEventAction(e, "join", event.id)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition"
+          >
+            Join
+          </button>
                   </div>
                 </div>
               );
